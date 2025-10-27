@@ -1,7 +1,7 @@
 SKILL ASSIGNMENT-2
 
 PROGRAM:
-Write an assembly language program in 8051 to generate a 50 ms delay using Timer 0 in Mode 2 (8-bit auto-reload mode) and blink an LED connected to Port 3.0.
+Write an assembly language program in 8051 to generate a 1 second delay using Timer 1 in Mode 1 and toggle all bits of Port 1 continuously.
 
 APPARATUS REQUIRED:
 
@@ -9,35 +9,38 @@ LAPTOP WITH KEIL SOFTWARE
 
 PROGRAM:
 ```
-ORG 0H         
+ORG 0000H
 
-MOV P3, #00H    
+MAIN:   MOV P1,#0FFH
+        MOV TMOD,#10H
 
-MOV TMOD, #02H  
-MOV TH0, #56H
-MOV TL0, #56H   
+HERE:   ACALL DELAY
+        MOV A,P1
+        CPL A
+        MOV P1,A
+        SJMP HERE
 
-SETB TR0        
+DELAY:  MOV R2,#20
+AGAIN:  ACALL DELAY50
+        DJNZ R2,AGAIN
+        RET
 
-MAIN:
-    MOV R2, #250   
-
-WAIT_OVERFLOW:
-    JNB TF0, $     
-    CLR TF0        
-    DJNZ R2, WAIT_OVERFLOW 
-
-    CPL P3.0       
-    SJMP MAIN      
+DELAY50: MOV TH1,#3CH
+         MOV TL1,#0B0H
+         SETB TR1
+WAIT50:  JNB TF1,WAIT50
+         CLR TR1
+         CLR TF1
+         RET
 
 END
 ```
 OUTPUT:
+<img width="1919" height="1199" alt="Screenshot 2025-10-27 195106" src="https://github.com/user-attachments/assets/40923220-b18d-4a74-9a53-930b369de890" />
+<img width="1919" height="1195" alt="Screenshot 2025-10-27 195046" src="https://github.com/user-attachments/assets/424e419d-74f8-40e4-aaa3-b12ec9127a4b" />
 
-![WhatsApp Image 2025-10-25 at 10 15 58_a73af6f9](https://github.com/user-attachments/assets/281aeb78-22ae-4d3f-b080-a2a773245796)
 
-![WhatsApp Image 2025-10-25 at 10 16 06_584e37bc](https://github.com/user-attachments/assets/102cd50a-4273-4a3c-bffc-0017e119e718)
 
 RESULT:
 
-THUS THE PROGRAM TO FIND THE FACTORIAL OF THE GIVEN NUMBER IS EXECUTED.
+Thus the program to generate a 1 second delay using Timer 1 in Mode 1 and toggle all bits of Port 1 continuouslyIS executed.

@@ -1,7 +1,7 @@
-SKILL ASSIGNMENT-2
+SKILL ASSIGNMENT-1
 
 PROGRAM:
-Write an assembly language program in 8051 to generate a 1 second delay using Timer 1 in Mode 1 and toggle all bits of Port 1 continuously.
+Write an assembly language program in 8086 to search for a given number in an array of N elements and display whether the number is found or not found.
 
 APPARATUS REQUIRED:
 
@@ -9,38 +9,56 @@ LAPTOP WITH KEIL SOFTWARE
 
 PROGRAM:
 ```
-ORG 0000H
+DATA SEGMENT
+    ARR DB 12, 45, 23, 56, 78, 90, 34
+    N   DB 7
+    NUM DB 56
+    MSG1 DB 0DH,0AH,'NUMBER FOUND$'
+    MSG2 DB 0DH,0AH,'NUMBER NOT FOUND$'
+DATA ENDS
 
-MAIN:   MOV P1,#0FFH
-        MOV TMOD,#10H
+CODE SEGMENT
+ASSUME CS:CODE, DS:DATA
 
-HERE:   ACALL DELAY
-        MOV A,P1
-        CPL A
-        MOV P1,A
-        SJMP HERE
+START:
+    MOV AX, DATA
+    MOV DS, AX
+    MOV CL, N
+    LEA SI, ARR
+    MOV AL, NUM
 
-DELAY:  MOV R2,#20
-AGAIN:  ACALL DELAY50
-        DJNZ R2,AGAIN
-        RET
+SEARCH_LOOP:
+    CMP AL, [SI]
+    JE FOUND
+    INC SI
+    DEC CL
+    JNZ SEARCH_LOOP
 
-DELAY50: MOV TH1,#3CH
-         MOV TL1,#0B0H
-         SETB TR1
-WAIT50:  JNB TF1,WAIT50
-         CLR TR1
-         CLR TF1
-         RET
+NOT_FOUND:
+    LEA DX, MSG2
+    JMP DISPLAY
 
-END
+FOUND:
+    LEA DX, MSG1
+
+DISPLAY:
+    MOV AH, 09H
+    INT 21H
+    MOV AH, 4CH
+    INT 21H
+
+CODE ENDS
+END START
+
 ```
 OUTPUT:
-<img width="1919" height="1199" alt="Screenshot 2025-10-27 195106" src="https://github.com/user-attachments/assets/c6c7af6c-b4ed-43b6-bda0-7e6237023d25" />
-<img width="1919" height="1195" alt="Screenshot 2025-10-27 195046" src="https://github.com/user-attachments/assets/536e257e-a777-4f6f-a5a9-b52a356177e4" />
+
+<img width="638" height="431" alt="Screenshot 2025-10-27 201543" src="https://github.com/user-attachments/assets/4860002c-a014-4765-b695-cfafbe9b78f5" />
+<img width="635" height="428" alt="Screenshot 2025-10-27 201614" src="https://github.com/user-attachments/assets/c2b9a1f7-5be8-4d69-8998-b9818380da1c" />
+<img width="636" height="427" alt="Screenshot 2025-10-27 201340" src="https://github.com/user-attachments/assets/24ef393d-a339-4661-9fcf-29f3cf48aebd" />
 
 
 RESULT:
+Thus the program to search for a given number in an array of N elements and display whether the number is found or not found.
 
-Thus the program to generate a 1 second delay using Timer 1 in Mode 1 and toggle all bits of Port 1 continuously.
 
